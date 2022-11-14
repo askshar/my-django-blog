@@ -1,0 +1,17 @@
+{% extends 'blog/base.html' %}
+
+<!-- {% load crispy_forms_tags %} -->
+
+{% block content %}
+
+
+<form method="post">
+    {% csrf_token %}
+    <h2>Sure to delete "{{comment.comment}}"
+    <div>
+    <button type="submit" class="btn btn-danger btn-sm mt-2">Delete</button>
+    <a href="{% url 'post-detail' post.id %}" class="btn btn-secondary btn-sm mt-2">Back</a>
+    </div>
+  </form>
+
+  {% endblock content %}

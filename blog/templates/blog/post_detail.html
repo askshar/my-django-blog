@@ -1,0 +1,47 @@
+{% extends 'blog/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+        <article class="media content-section">
+            <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
+              <small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
+                {% if post.author == request.user %}
+                <div>
+                    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' post.id %}">Update</a>
+                    <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' post.id %}">Delete</a>
+                    </div>
+                {% endif %}
+            </div>
+            <h2 class="article-title">{{ post.title }}</h2>
+            <p class="article-content">{{ post.content }}</p>
+          </div>
+        </article>
+        <article class="content-section">
+            {% if comments_count %}
+            <h2>Comments ({{comments_count}})</h2>
+            {% else %}
+            <h2>Comments (0)</h2>
+            {% endif %}
+            <hr>
+            <form method="post">
+                {% csrf_token %}
+                {{form}}
+                <button type="submit" class="btn btn-primary mt-2">Submit</button>
+            </form>
+            <hr>
+            {% if post_comments %}
+                {% for comment in post_comments %}
+                    <p><strong>{{comment.user}} </strong>{{comment.comment}} ({{comment.pub_date|timesince}} ago)</p>
+                {% if comment.user == request.user %}
+                    <a style="text-decoration: none;" href="{% url 'delete-comment' post.id comment.id %}">Delete</a> <a style="text-decoration: none;" href="{% url 'update-comment' post.id comment.id %}">Update</a>
+                    <hr>
+                {% endif %}
+                {% endfor %}
+            {% else %}
+                <p>No Comments...</p>
+            {% endif %}
+        </article>
+{% endblock content %}
